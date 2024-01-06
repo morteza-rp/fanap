@@ -18,7 +18,7 @@ def check_guess():
     guess_count += 1
     guess_left = guess_limit - guess_count
 
-    # Get the user's guess from the entry widget
+    # Get the user's guess from the entry
     try:
         user_guess = int(entry_guess.get())
         if user_guess > 100 or user_guess < 1:
