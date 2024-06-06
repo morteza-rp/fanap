@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler, Normalizer, OneHotEncoder
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
@@ -26,7 +27,9 @@ from tensorflow.keras.losses import BinaryCrossentropy
 import warnings
 warnings.filterwarnings('ignore')
 
-
-
-
+class Loan:
+    def preprocess(self, df):
+        le = LabelEncoder()
+        df['purpose'] = le.fit_transform(df['purpose'])
+        # Normalize features
 
