@@ -1,5 +1,10 @@
 import streamlit as st
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+import xgboost as xgb
+from xgboost import XGBClassifier
+import numpy as np
+
 
 columns = ['credit.policy', 'purpose', 'int.rate', 'installment', 'log.annual.inc',
        'dti', 'fico', 'days.with.cr.line', 'revol.bal', 'revol.util',
@@ -7,7 +12,7 @@ columns = ['credit.policy', 'purpose', 'int.rate', 'installment', 'log.annual.in
 
 
 st.write("""
-         ### Did Loan pay or not? 💸🧾
+         ### Has the loan been paid or not? 💸🧾
          This app predicts the loan payment""")
 
 st.sidebar.header("User Input Features")
@@ -67,12 +72,44 @@ else:
                                           help="the number of derogatory public records (e.g., bankruptcies, tax liens) associated with the individual's credit report.")
 
        features = pd.DataFrame([[credit_policy,purpose,int_rate,installment,log_annual_inc,dti,fico,days_with_cr_line,revol_bal,revol_util,inq_last_6mths,delinq_2yrs,pub_rec]], 
-                           columns=columns)
+                                columns=columns)
 
        return features
 
     input_df = user_input_features()
 
 
+# combines user input features with entire loan dataset
+loan_raw = pd.read_csv(r"E:\github\fanap\loan_data.csv")
+loan = loan_raw.drop(columns=["not.fully.paid"])
+df = pd.concat([input_df, loan], axis=0)
+
+# Encoding of ordinal features
+le = LabelEncoder()
+df['purpose'] = le.fit_transform(df['purpose'])
+df = df[:1] # selects only the first row(the user input data)
+
+# Display user input features
+st.subheader("User input features")
+
+if uploaded_file is not None:
+    st.write(df)
+else:
+    st.write("Awaiting CSV file to be uploaded. Currently using example input parameters (shown below)")
+    st.write(df)
+
+# reads in saved classification model
+xgb_clf = XGBClassifier()
+xgb_clf.load_model(r"E:\github\fanap\xgb_model.json")
+
+# Apply model to make prediction
+prediction = xgb_clf.predict(df)
+prediction_proba = xgb_clf.predict_proba(df)
 
 
+st.subheader("Prediction")
+not_fully_paid = np.array(["NO", "YES"])
+st.write(not_fully_paid[prediction])
+
+st.subheader("Prediction Probability")
+st.write(prediction_proba)
