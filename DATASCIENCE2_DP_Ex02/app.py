@@ -17,7 +17,7 @@ st.write("""
 
 st.sidebar.header("User Input Features")
 
-st.sidebar.markdown(""" [Example CSV input file](https://dexscreener.com/watchlist)""")
+st.sidebar.markdown(""" [Example CSV input file](https://github.com/morteza-rp/fanap/blob/main/DATASCIENCE2_DP_Ex02/loan_example.csv)""")
 
 # Collect user input features into dataframe
 uploaded_file = st.sidebar.file_uploader("Upload your CSV file", type=["csv"])
@@ -80,7 +80,7 @@ else:
 
 
 # combines user input features with entire loan dataset
-loan_raw = pd.read_csv(r"E:\github\fanap\loan_data.csv")
+loan_raw = pd.read_csv(r"E:\github\fanap\DATASCIENCE2_DP_Ex02\loan_data.csv")
 loan = loan_raw.drop(columns=["not.fully.paid"])
 df = pd.concat([input_df, loan], axis=0)
 
@@ -100,7 +100,7 @@ else:
 
 # reads in saved classification model
 xgb_clf = XGBClassifier()
-xgb_clf.load_model(r"E:\github\fanap\xgb_model.json")
+xgb_clf.load_model(r"E:\github\fanap\DATASCIENCE2_DP_Ex02\xgb_model.json")
 
 # Apply model to make prediction
 prediction = xgb_clf.predict(df)
